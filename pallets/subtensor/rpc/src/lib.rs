@@ -3,6 +3,7 @@
 use jsonrpsee::{
     core::RpcResult,
     proc_macros::rpc,
+    tracing::info,
     types::{error::ErrorObject, ErrorObjectOwned},
 };
 use sp_blockchain::HeaderBackend;
@@ -103,6 +104,7 @@ where
     C::Api: SubnetRegistrationRuntimeApi<Block>,
 {
     fn subtensor_epoch(&self, netuid: u16, incentive_opt: Option<bool>) -> RpcResult<Vec<u8>> {
+        info!("Received request to run the epoch iwth netuid: {}", netuid);
         epoch(netuid, incentive_opt)
     }
 
