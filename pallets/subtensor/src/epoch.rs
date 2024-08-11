@@ -348,7 +348,20 @@ impl<T: Config> Pallet<T> {
     ///     - Print debugging outputs.
     ///
     #[allow(clippy::indexing_slicing)]
-    pub fn epoch(netuid: u16, rao_emission: u64) -> Vec<(T::AccountId, u64, u64)> {
+    pub fn epoch(netuid: u16, incentive_opt: Option<bool>) -> Vec<(T::AccountId, u64, u64)> {
+        let rao_emission: u64 = get_emission_value(); //not found in this scope
+
+        let incentive = if let Some(incentive) = incentive_opt {
+            incentive
+        } else {
+            false
+        };
+        if incentive {
+            //true: return incentive storage value as Vec<I32F32>
+            let incentive_storage_value: Vec<I32F32> = [I32F32::from_num(0)].to_vec();
+            return incentive_storage_value; //mismatched types
+        }
+
         // Get subnetwork size.
         let n: u16 = Self::get_subnetwork_n(netuid);
         log::trace!("Number of Neurons in Network: {:?}", n);

@@ -18,6 +18,8 @@ pub use subtensor_custom_rpc_runtime_api::{
 
 #[rpc(client, server)]
 pub trait SubtensorCustomApi<BlockHash> {
+    #[method(name = "custom_rpc_function")]
+    fn subtensor_epoch(&self) -> RpcResult<Vec<u8>>;
     #[method(name = "delegateInfo_getDelegates")]
     fn get_delegates(&self, at: Option<BlockHash>) -> RpcResult<Vec<u8>>;
     #[method(name = "delegateInfo_getDelegate")]
@@ -100,6 +102,10 @@ where
     C::Api: SubnetInfoRuntimeApi<Block>,
     C::Api: SubnetRegistrationRuntimeApi<Block>,
 {
+    fn subtensor_epoch(&self, netuid: u16, incentive_opt: Option<bool>) -> RpcResult<Vec<u8>> {
+        epoch(netuid, incentive_opt)
+    }
+
     fn get_delegates(&self, at: Option<<Block as BlockT>::Hash>) -> RpcResult<Vec<u8>> {
         let api = self.client.runtime_api();
         let at = at.unwrap_or_else(|| self.client.info().best_hash);
